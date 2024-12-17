@@ -1,3 +1,4 @@
+#include <string.h>
 #include <stdio.h>
 #define max 25
 void allocate(int b[], int f[], int nf, int nb, char* method);
