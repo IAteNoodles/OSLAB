@@ -24,7 +24,7 @@ for(i = 0; i<7; i++)
 {
 printf("Enter the day : ");
 scanf("%s",day);
-Acharya Institute of Technology – Department of CS&E Code:BCSL305
+""
 calendar[i].day = (char *)malloc(strlen(day)+1); // dynamically allocated memory for day
 strcpy(calendar[i].day, day); // copy day from local variable to heap
 printf("Enter the date : ");
