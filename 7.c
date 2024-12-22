@@ -1,84 +1,172 @@
-#include <stdio.h>
-#include <stdbool.h>
-#define MAX_FRAMES 3
-
-void printFrames(int frames[], int n) {
-    for (int i = 0; i < n; i++) {
-        if (frames[i] == -1)
-            printf(" X");
-        else
-            printf(" %d", frames[i]);
-    }
-    printf("\n");
+#include<stdio.h>
+#include<stdlib.h>
+#include<string.h>
+int count=0;
+struct node
+{
+int sem;
+long int phno;
+char name[20], branch[10], usn[20];
+struct node *next;
+}*first=NULL,*last=NULL,*temp=NULL, *temp1;
+void create()
+{
+int sem;
+long int phno;
+char name[20],branch[10],usn[20];
+temp=(struct node*)malloc(sizeof(struct node));
+printf("\n Enter USN, NAME, BRANCH, SEMESTER, PHNUM of student : ");
+scanf("%s %s %s %d %ld", usn, name,branch, &sem,&phno);
+strcpy(temp->usn,usn);
+strcpy(temp->name,name);
+strcpy(temp->branch,branch);
+temp->sem = sem;
+temp->phno = phno;
+temp->next=NULL;
+count++;
 }
-
-int search(int key, int frames[], int n) {
-    for (int i = 0; i < n; i++)
-        if (frames[i] == key)
-            return i;
-    return -1;
+void insert_atfirst()
+{
+if (first == NULL)
+{
+create();
+first = temp;
+last = first;
 }
-
-int fifoPageReplacement(int pageReferences[], int n, int capacity) {
-    int frames[capacity];
-    int pageFaults = 0;
-    int frameIndex = 0;
-    for (int i = 0; i < capacity; i++)
-        frames[i] = -1;
-    for (int i = 0; i < n; i++) {
-        printf("Referencing page %d: ", pageReferences[i]);
-        if (search(pageReferences[i], frames, capacity) == -1) {
-            frames[frameIndex] = pageReferences[i];
-            frameIndex = (frameIndex + 1) % capacity;
-            pageFaults++;
-            printFrames(frames, capacity);
-        } else {
-            printf("Page %d is already in memory.\n", pageReferences[i]);
-        }
-    }
-    return pageFaults;
+else
+{
+create();
+temp->next = first;
+first = temp;
 }
-
-int lruPageReplacement(int pageReferences[], int n, int capacity) {
-    int frames[capacity];
-    int pageFaults = 0;
-    for (int i = 0; i < capacity; i++)
-        frames[i] = -1;
-    for (int i = 0; i < n; i++) {
-        printf("Referencing page %d: ", pageReferences[i]);
-        int index = search(pageReferences[i], frames, capacity);
-        if (index == -1) {
-            int leastRecentlyUsed = n;
-            int victimIndex;
-            for (int j = 0; j < capacity; j++) {
-                int k;
-                for (k = i - 1; k >= 0; k--)
-                    if (frames[j] == pageReferences[k])
-                        break;
-                if (k < leastRecentlyUsed) {
-                    leastRecentlyUsed = k;
-                    victimIndex = j;
-                }
-            }
-            frames[victimIndex] = pageReferences[i];
-            pageFaults++;
-            printFrames(frames, capacity);
-        } else {
-            printf("Page %d is already in memory.\n", pageReferences[i]);
-        }
-    }
-    return pageFaults;
 }
-
-int main() {
-    int pageReferences[] = {7, 0, 1, 2, 0, 3, 0, 4, 2, 3, 0, 3, 2};
-    int n = sizeof(pageReferences) / sizeof(pageReferences[0]);
-    int capacity = MAX_FRAMES;
-    printf("FIFO Page Replacement:\n");
-    int fifoFaults = fifoPageReplacement(pageReferences, n, capacity);
-    printf("Total Page Faults for FIFO: %d\n\n", fifoFaults);
-    printf("LRU Page Replacement:\n");
-    int lruFaults = lruPageReplacement(pageReferences, n, capacity);
-    printf("Total Page Faults for LRU: %d\n", lruFaults);
-    return 0;
+void insert_atlast()
+{
+if(first==NULL)
+{
+create();
+first = temp;
+last = first;
+}
+else
+{
+create();
+last->next = temp;
+last = temp;
+}
+}
+void display()
+{
+temp1=first;
+if(temp1 == NULL)
+{
+printf("List empty to display \n");
+return;
+}
+printf("\n Linked list elements from begining : \n");
+printf("USN\t NAME\t BRANCH\t SEMESTER\t PH.NUM\n");
+while (temp1!= NULL)
+{
+printf("%s\t %s\t %s\t %d\t\t %ld\n", temp1->usn, temp1->name,temp1->branch,temp1-
+>sem,temp1->phno);
+temp1 = temp1->next;
+}
+printf(" No of students = %d ", count);
+}
+void delete_end()
+{
+struct node *temp;
+temp=first;
+if(first==NULL)
+/* List is Empty */
+{
+printf("List is Empty\n");
+return;
+}
+if(temp->next==NULL)
+/* If only there is one node in the List */
+{
+printf("%s %s %s %d %ld\n", temp->usn, temp->name,temp->branch, temp->sem, temp-
+>phno );
+free(temp);
+first=NULL;
+}
+else
+/* If more than one node in the List */
+{
+while(temp->next!=last)
+temp=temp->next;
+printf("%s %s %s %d %ld\n", last->usn, last->name,last->branch, last->sem, last->phno );
+free(last);
+temp->next=NULL;
+last=temp;
+}
+count--;
+}
+void delete_front()
+{
+struct node *temp;
+temp=first;
+if(first==NULL)
+/* List is Empty */
+{
+printf("List is Empty\n");
+return;
+}
+if(temp->next==NULL) /* If only there is one node in the List */
+{
+printf("%s %s %s %d %ld\n", temp->usn, temp->name,temp->branch, temp->sem, temp-
+>phno );
+free(temp);
+first=NULL;
+}
+else
+/* If more than one node in the List */
+{
+first=temp->next;
+printf("%s %s %s %d %ld", temp->usn, temp->name,temp->branch,temp->sem, temp-
+>phno );
+free(temp);
+}
+count--;
+}
+void main()
+{
+int ch,n,i;
+first=NULL;
+temp = temp1 = NULL;
+printf("-----------------MENU----------------------\n");
+printf("\n 1 Create a SLL of n Employees");
+printf("\n 2 - Display from beginning");
+printf("\n 3 - Insert at end");
+printf("\n 4 - delete at end");
+printf("\n 5 - Insert at beg");
+printf("\n 6 - delete at beg");
+printf("\n 7 - exit\n");
+printf("-------------------------------------------\n");
+while (1)
+{
+printf("\n Enter choice : ");
+scanf("%d", &ch);
+switch (ch)
+{
+case 1: printf("\n Enter no of students : ");
+scanf("%d", &n);
+for(i=0;i<n;i++)
+insert_atfirst();
+break;
+case 2: display();
+break;
+case 3: insert_atlast();
+break;
+case 4: delete_end();
+break;
+case 5: insert_atfirst();
+break;
+case 6: delete_front();
+break;
+case 7: exit(0);
+default:printf("Wrong Choice\n");
+}
+}
 }

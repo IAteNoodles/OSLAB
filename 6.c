@@ -1,82 +1,76 @@
-#include <string.h>
-#include <stdio.h>
-#define max 25
-void allocate(int b[], int f[], int nf, int nb, char* method);
-int main() {
- int b[max], f[max], nb, nf, i;
- char method[10];
- printf("Enter the number of blocks: ");
- scanf("%d", &nb);
- printf("Enter the number of files: ");
- scanf("%d", &nf);
- printf("Enter the size of the blocks:\n");
- for(i = 0; i < nb; i++) {
- printf("Block %d: ", i+1);
- scanf("%d", &b[i]);
- }
- printf("Enter the size of the files:\n");
- for(i = 0; i < nf; i++) {
- printf("File %d: ", i+1);
- scanf("%d", &f[i]);
- }
- printf("Enter allocation method (worst, best, first): ");
- scanf("%s", method);
- allocate(b, f, nf, nb, method);
- return 0;
+#include<stdio.h>
+#include<stdlib.h>
+#define QSIZE 4
+int q[QSIZE], r=-1, f=0, count=0, item;
+/* Insert Operation */
+void insert()
+{
+/* Check for queue overflow */
+if(count == QSIZE)
+{
+printf("Queue Overflow\n");
+return;
 }
-void allocate(int b[], int f[], int nf, int nb, char* method) {
- int bf[max], ff[max];
- int i, j, temp, highest, lowest, index;
- for(i = 0; i < nf; i++) {
- ff[i] = -1;
- }
- for(i = 0; i < nb; i++) {
- bf[i] = 0;
- }
- for(i = 0; i < nf; i++) {
- index = -1;
- if (strcmp(method, "worst") == 0) {
- highest = -1;
- for(j = 0; j < nb; j++) {
- if(bf[j] == 0 && b[j] >= f[i]) {
- temp = b[j] - f[i];
- if(temp > highest) {
- highest = temp;
- index = j;
- }
- }
- }
- } else if (strcmp(method, "best") == 0) {
- lowest = max;
- for(j = 0; j < nb; j++) {
- if(bf[j] == 0 && b[j] >= f[i]) {
- temp = b[j] - f[i];
- if(temp < lowest) {
- lowest = temp;
- index = j;
- }
- }
- }
- } else if (strcmp(method, "first") == 0) {
- for(j = 0; j < nb; j++) {
- if(bf[j] == 0 && b[j] >= f[i]) {
- index = j;
- break;
- }
- }
- }
- if(index != -1) {
- ff[i] = index;
- bf[index] = 1;
- }
- }
- printf("\nFile_no\tFile_size\tBlock_no\tBlock_size\tFragment\n");
- for(i = 0; i < nf; i++) {
- printf("%d\t\t%d\t\t", i+1, f[i]);
- if(ff[i] != -1) {
- printf("%d\t\t%d\t\t%d\n", ff[i]+1, b[ff[i]], b[ff[i]] - f[i]);
- } else {
- printf("Not Allocated\n");
- }
- }
+r = (r+1) % QSIZE; /* Increment rear by 1 */
+q[r] = item; /* Insert into queue */
+count++;
+}
+/* Delete Operation */
+void del()
+{
+/* Check for Queue Underflow */
+if(count == 0)
+{
+printf("Queue Underflow\n");
+return;
+}
+printf("The item deleted is: %d\n", q[f]);
+f = (f+1) % QSIZE;
+count--;
+}
+/* Display Operation */
+void display(int front)
+{
+int i;
+/* Check for Empty Queue */
+if(count == 0)
+{
+printf("Queue is Empty\n");
+return;
+}
+/* Display the contents of the queue */
+printf("Contents of the queue\n");
+for(i=1; i<=count; i++)
+{
+printf("%d\n",q[front]);
+front = (front+1) % QSIZE;
+}
+}
+void main()
+{
+int choice;
+do
+{
+printf("***********************\n");
+printf("Circular Queue Operations\n");
+printf("1. Insert\n");
+printf("2. Delete\n");
+printf("3. Display\n");
+printf("4. Quit\n");
+printf("Enter your choice:\n");
+scanf("%d",&choice);
+switch(choice)
+{
+case 1: printf("Enter the item to be inserted\n");
+scanf("%d",&item);
+insert();
+break;
+case 2: del();
+break;
+case 3: display(f);
+break;
+case 4: exit(0);
+default:printf("Invalid choice\n");
+}
+}while(choice!=4);
 }

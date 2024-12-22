@@ -1,35 +1,57 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <unistd.h>
-#include <sys/wait.h>
-int main()
+#include<stdio.h>
+#include<stdlib.h>
+#include<string.h>
+struct calElement
 {
-pid_t pid;
-int status;
-// Fork a child process
-pid = fork();
-if (pid < 0)
+char *day;
+int date;
+char *activity;
+};
+struct calElement* create() // it creates calendar structure for 7 days
 {
-// Error occurred
-fprintf(stderr, "Fork Failed\n");
-return 1;
+struct calElement *calendar;
+// dynamic allocation for calendar
+calendar = (struct calElement *)malloc(sizeof(struct calElement)*7);
+return calendar;
 }
-else if (pid == 0)
+void read(struct calElement *calendar)
 {
-// Child process
-printf("This is the child process with pid = %d\n", getpid());
-// Execute /bin/ls
-execl("/bin/ls", "ls", NULL);
-// If there is an error, print it and exit
-perror("execl failed");
-_exit(1);
-}
-else
+// Local Variable to store string elements
+char day[10];
+char activity[25];
+int i, date;
+for(i = 0; i<7; i++)
 {
-// Wait for the child to complete
-printf("Parent process, PID = %u\n", getpid());
-waitpid(pid, &status, 0);
-printf("Child completed with pid = %d\n", pid);
+printf("Enter the day : ");
+scanf("%s",day);
+Acharya Institute of Technology – Department of CS&E Code:BCSL305
+calendar[i].day = (char *)malloc(strlen(day)+1); // dynamically allocated memory for day
+strcpy(calendar[i].day, day); // copy day from local variable to heap
+printf("Enter the date : ");
+scanf("%d",&date);
+calendar[i].date = date;
+getchar();
+printf("Enter description of the activity : ");
+scanf("%[^\n]s",activity);
+// dynamically allocate memory for activity
+calendar[i].activity = (char *)malloc(strlen(activity)+1);
+strcpy(calendar[i].activity, activity); // copy activity from local variable to heap
 }
-return 0;
+}
+void display(struct calElement *calendar)
+{
+int i;
+printf("\n\nYour calendar\n");
+printf("Day\t\tDate\t\tActivity");
+//Display the calendar
+for(i = 0; i<7; i++){
+printf("\n%s\t\t%d\t\t%s",calendar[i].day,calendar[i].date,calendar[i].activity );
+}
+void main()
+{
+struct calElement *calendar; // create structure variable of type pointer
+calendar=create(); //call create function
+read(calendar); // read function to read all inputs
+display(calendar); // Function to print calendar
+free(calendar); // Release the memory allocated dynamically
 }
