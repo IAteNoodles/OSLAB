@@ -1,76 +1,75 @@
 #include<stdio.h>
-#include<stdlib.h>
-#define QSIZE 4
-int q[QSIZE], r=-1, f=0, count=0, item;
-/* Insert Operation */
-void insert()
+#define queuesize 5
+int item,front,rear,count,q[queuesize];
+void insert_rear()
 {
-/* Check for queue overflow */
-if(count == QSIZE)
+  if(count = = queuesize)
+  {
+    printf("queue overflow\n");
+    return;
+  }
+  rear = (rear +1) % queuesize;
+  q[rear] = item;
+  count = count + 1;
+}
+ 
+void delete_front()
 {
-printf("Queue Overflow\n");
+  int item;
+  if(count = = 0)
+  {
+    	printf("queue is empty\n");
 return;
+  }
+  item = q[front];
+  printf("\nthe item deleted is %d",item);
+  front = (front +1) % queuesize;
+  count = count - 1;
 }
-r = (r+1) % QSIZE; /* Increment rear by 1 */
-q[r] = item; /* Insert into queue */
-count++;
-}
-/* Delete Operation */
-void del()
+ 
+ 
+void display()
 {
-/* Check for Queue Underflow */
-if(count == 0)
-{
-printf("Queue Underflow\n");
-return;
-}
-printf("The item deleted is: %d\n", q[f]);
-f = (f+1) % QSIZE;
-count--;
-}
-/* Display Operation */
-void display(int front)
-{
-int i;
-/* Check for Empty Queue */
-if(count == 0)
-{
-printf("Queue is Empty\n");
-return;
-}
-/* Display the contents of the queue */
-printf("Contents of the queue\n");
-for(i=1; i<=count; i++)
-{
-printf("%d\n",q[front]);
-front = (front+1) % QSIZE;
-}
+  int i,f;
+  if(count = = 0)
+  {
+    	printf("queue is empty\n");
+    	return;
+  }
+  printf("the contents of the queue are\n");
+  for(i=1,f=front;i<=count;i++)
+  {
+    	printf("%d\n",q[f]);
+    	f = (f+1) % queuesize;
+  	  }
 }
 void main()
 {
-int choice;
-do
-{
-printf("***********************\n");
-printf("Circular Queue Operations\n");
-printf("1. Insert\n");
-printf("2. Delete\n");
-printf("3. Display\n");
-printf("4. Quit\n");
-printf("Enter your choice:\n");
-scanf("%d",&choice);
-switch(choice)
-{
-case 1: printf("Enter the item to be inserted\n");
-scanf("%d",&item);
-insert();
-break;
-case 2: del();
-break;
-case 3: display(f);
-break;
-case 4: exit(0);
-default:printf("Invalid choice\n");
-}
-}while(choice!=4);
+  int choice;
+front=0;
+rear=-1;
+count=0;
+  clrscr( );
+  for(;;)
+  {
+    	printf("\n1:insert_rear\n2:delete_front\n");
+    	printf("3:display\n4:exit\n");
+    	printf("enter your choice\n");
+    	scanf("%d",&choice);
+    	switch(choice)
+    	{
+      		case 1: printf("enter the item to be inserted\n");
+	      		 scanf("%d",&item);
+	      		 insert_rear();
+	      		 break;
+ 
+      		case 2: delete_front();
+	      		 break;
+ 
+      		case 3: display();
+	      		 break;
+ 
+      		case 4: exit(0);
+    	}
+  }
 }

@@ -1,52 +1,69 @@
 #include<stdio.h>
+#include<string.h> 
+#include<stdlib.h> 
 #include<math.h>
-#include<string.h>
-#include<ctype.h>
-int compute(char symbol, int op1, int op2)
-{
-switch(symbol)
-{
-case '+': return op1+op2; /* Perform addition */
-case '-': return op1-op2; /* Perform subtraction */
-case '*': return op1*op2; /* Perform multiplaction */
-case '/': return op1/op2; /* Perform division */
-case '%': return op1%op2; /* Perform division and gives reminder */
-case '$':
-case '^': return pow(op1,op2); /* Compute power */
-}
-}
+#define MAX 50 
+int stack[MAX]; 
+char post[MAX]; 
+int top= -1;
+ 
+/*fUNCTION PROTOYPE */
+void pushstack(int tmp);
+void calculator(char c);
 void main()
 {
-int s[20]; /* Place for stack elements */
-int res; /* Holds partial or final result */
-int op1; /* First operand */
-int op2; /* Second operand */
-int top;
-/* Points to the topmost element */
-int i;
-/* Index value */
-char postfix[20]; /* Input expression */
-char symbol; /* Scanned postfix symbol */
-printf("Enter the postfix expression\n");
-scanf("%s",postfix);
-top=-1;
-for(i=0;i<strlen(postfix);i++)
-{
-symbol=postfix[i]; /* Obtains the next character */
-if(isdigit(symbol)) /* If character is a digit or not */
-s[++top]=symbol-'0';
-else
-{
-op2=s[top--];
-/* Obtain second operand from stack */
-op1=s[top--];
-/* Obtain first operand from stack */
-/* Perform specified operation */
-res=compute(symbol,op1,op2);
-/* Push partial results on the stack */
-s[++top]=res;
+	int i;
+	printf("Insert a postfix notation :: "); 
+	scanf("%s",post);
+	for(i=0;i<strlen(post);i++)
+	{
+		if(post[i]>='0' && post[i]<='9')
+		{
+			pushstack(i);
+		}
+		if(post[i]=='+' || post[i]=='-' || post[i]=='*' || post[i]=='/' || post[i]=='^')
+		{
+			calculator(post[i]);
+		}
+	}
+	printf("\n\nResult :: %d",stack[top]);
 }
+ 
+void pushstack(int tmp)
+{
+	top++; 
+	stack[top]=(int)(post[tmp]-48);
 }
-res=s[top--];
-printf("the result is %d\n",res);
+ 
+void calculator(char c)
+{
+	int a,b,ans; 
+	a=stack[top];
+	stack[top]='\0'; 
+	top--;
+	b=stack[top];
+	stack[top]='\0';
+	top--;
+	switch(c)
+	{
+		case '+': 
+			ans=b+a; 
+			break; 
+		case '-':
+			ans=b-a;
+			break;
+		case '*': 
+			ans=b*a; 
+			break;
+		case '/': 
+			ans=b/a; 
+			break; 
+		case '^':
+			ans=pow(b,a);
+			break;	
+		default:
+			ans=0;
+	}
+	top++;
+	stack[top]=ans;
 }
